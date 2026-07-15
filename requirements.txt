@@ -1,3 +1,3 @@
-fiftyone==0.23.2
+fiftyone==1.17.0
 opencv-python==4.9.0.80
 notebook==7.5.6
