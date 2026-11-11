@@ -103,15 +103,15 @@ def select_random_annotation(annotations, class_id):
 
 
 # Load the signature dataset
-signatures_dir = 'data/forged_signatures'
+signatures_dir = 'data/sources/signatures/forged'
 signature_images_path, signature_annotations = load_dataset(signatures_dir)
 
 # Load the checks dataset
-checks_dir = 'data/checks'
+checks_dir = 'data/sources/checks'
 checks_images_path, checks_annotations = load_dataset(checks_dir)
 
 # Load the additional text dataset
-texts_dir = 'data/additional_text'
+texts_dir = 'data/sources/dummy_text'
 texts_images_path, texts_annotations = load_dataset(texts_dir)
 
 # Define the directory to save the composite images
