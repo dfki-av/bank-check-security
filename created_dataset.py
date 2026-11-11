@@ -166,7 +166,7 @@ for signature_file in signature_files:
             continue
 
         # Select 5 random checks to composite the signature on
-        selected_checks = random.sample(check_files, 5)
+        selected_checks = random.sample(check_files, 10)
         for bank_check_file in selected_checks:
             check_info, check_anno = find_annotations_for_image(
                 bank_check_file, checks_annotations)
