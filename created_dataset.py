@@ -1,6 +1,7 @@
 import json
 import os
 import random
+import sys
 
 import cv2
 
@@ -103,19 +104,21 @@ def select_random_annotation(annotations, class_id):
 
 
 # Load the signature dataset
-signatures_dir = 'data/forged_signatures'
+kind = sys.argv[1] if len(sys.argv) > 1 else 'forged'  # 'forged' or 'genuine'
+assert kind in ('forged', 'genuine')
+signatures_dir = f'data/sources/signatures/{kind}'
 signature_images_path, signature_annotations = load_dataset(signatures_dir)
 
 # Load the checks dataset
-checks_dir = 'data/checks'
+checks_dir = 'data/sources/checks'
 checks_images_path, checks_annotations = load_dataset(checks_dir)
 
 # Load the additional text dataset
-texts_dir = 'data/additional_text'
+texts_dir = 'data/sources/dummy_text'
 texts_images_path, texts_annotations = load_dataset(texts_dir)
 
 # Define the directory to save the composite images
-output_dir = 'data/forged_checks'
+output_dir = f'data/generated/{kind}_checks'
 output_images_path = f'{output_dir}/data'
 os.makedirs(output_images_path, exist_ok=True)
 
@@ -158,6 +161,8 @@ for signature_file in signature_files:
     # Load the signature image
     signatures_image = load_image(signature_images_path, image_info)
 
+    sig_cat = signature_annotations['categories'][0]['id']
+    image_annotations = [a for a in image_annotations if a['category_id'] == sig_cat]
     for i, annotation in enumerate(image_annotations):
         cropped_signature = crop_signature(
             signatures_image, annotation['bbox'])
@@ -165,8 +170,8 @@ for signature_file in signature_files:
             print(f'Empty signature: {signature_file}, {annotation["bbox"]}')
             continue
 
-        # Select 5 random checks to composite the signature on
-        selected_checks = random.sample(check_files, 5)
+        # Composite the signature on every check template (10 per signature -> 1,000 forged / 3,360 genuine)
+        selected_checks = check_files
         for bank_check_file in selected_checks:
             check_info, check_anno = find_annotations_for_image(
                 bank_check_file, checks_annotations)
